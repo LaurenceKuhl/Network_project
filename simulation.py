@@ -12,5 +12,8 @@ class Simulation:
     self.text_time = text_time
     self.max_time = max_time 
     
-#P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
+  #def show_best(): (returns a figure and a list of the realistic parameters)
+  #def save_pop(): (save a file ".txt")
+  #def run(): (returns void or "finished")
 
+#P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])

@@ -21,6 +21,18 @@ class Population:
     for i in xrange(nb_graphs):
       self.graphs.append(nx.fast_gnp_random_graph(self.nb_nodes, self.p_edges, seed=None, directed=False))
       #print self.graphs[i].edges()
+        
+  #========================= methods for the graph not predefined before
+  
+  #def fitness(): (returns a float between 0 and 1)
+
+  #========================================== methods for the population
+  
+  #def fitness_list(): (returns a list of float)
+  #def reproduction(): (returns void)
+  #def mutation(): (returns void)
+    
+    
     
 #P1 = Population(5,0.5,2,0.1,0.1,0.2,[2])
 
