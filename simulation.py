@@ -16,4 +16,5 @@ class Simulation:
   #def save_pop(): (save a file ".txt")
   #def run(): (returns void or "finished")
 
-#P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1.mutation(2)
