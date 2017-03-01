@@ -1,4 +1,5 @@
 import math
+from powerlaw import Fit
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,7 +25,14 @@ class Population:
         
   #========================= methods for the graph not predefined before
   
-  #def fitness(): (returns a float between 0 and 1)
+  def clust_powlaw(self):
+    gamma = []
+    for G in self.graphs:
+	  fit = Fit(sorted(G.degree().values()))
+	  gamma.append(fit.power_law.alpha)
+    return gamma
+    
+  #def fitness(): (returns a float between 0 and 1)	
 
   #========================================== methods for the population
   
@@ -52,5 +60,6 @@ class Population:
     
     
     
-#P1 = Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1 = Population(1000,0.5,2,0.1,0.1,0.2,[2])
+print P1.clust_powlaw()
 
