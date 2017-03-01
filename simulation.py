@@ -28,4 +28,5 @@ class Simulation:
 		liste_f = fitness_list()
 
 
-#P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1.mutation(2)

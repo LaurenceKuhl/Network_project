@@ -1,4 +1,5 @@
 import math
+from powerlaw import Fit
 import random
 import numpy as np
 import matplotlib.pyplot as plt
@@ -24,15 +25,41 @@ class Population:
         
   #========================= methods for the graph not predefined before
   
-  #def fitness(): (returns a float between 0 and 1)
+  def clust_powlaw(self):
+    gamma = []
+    for G in self.graphs:
+	  fit = Fit(sorted(G.degree().values()))
+	  gamma.append(fit.power_law.alpha)
+    return gamma
+    
+  #def fitness(): (returns a float between 0 and 1)	
 
   #========================================== methods for the population
   
   #def fitness_list(): (returns a list of float)
   #def reproduction(): (returns void)
-  #def mutation(): (returns void)
+
+  def mutation( self , nb_newborns) : 	  # randomly mutate all the newborns
+	  if nb_newborns  !=  0 :
+		  c  =  0 # counter
+		  while c  !=  nb_newborns :  # randomly delete one edge, then add a new one and check wether or not it was already there
+			  m = random.uniform(0,1)
+			  if m <= self.pmut :
+			  	  deleted  =  random.randint(0, len( self.graphs[- c -1].edges() ) - 1 ) # random edge to be deleted 
+			  	  self.graphs[- c-1].remove_edge(self.graphs[- c -1].edges()[deleted][0],self.graphs[- c-1].edges()[deleted][1]) # pop the edge
+			  	  flag  =  False
+			  	  while flag  ==  False :
+				  	  node1  =  random.randint (0, len(self.graphs[-c-1].nodes()))
+				  	  node2  =  random.randint (0,len (self.graphs[-c-1].nodes()))
+				  	  if node1  !=  node2 and (min(node1,node2), max(node1,node2)) not in self.graphs[- c-1].edges() : # check if edge doesn't already exists
+					  	  flag  =  True
+					  	  self.graphs[-c-1].add_edge(min(node1,node2), max(node1,node2)) #new edge		
+					  	  #what about left-without-edges nodes ?	
+			  	  c += 1
+
     
     
     
-#P1 = Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1 = Population(1000,0.5,2,0.1,0.1,0.2,[2])
+print P1.clust_powlaw()
 
