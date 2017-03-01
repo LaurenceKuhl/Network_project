@@ -30,14 +30,21 @@ class Simulation:
     pop1 = pop.Population(nb_nodes, p_edges, nb_graphs, preprod, pmut, qreprod, coeff)
     #run the simulation
     for x in range(max_time):                          # OR in a second part “while True:”
+      if x%text_time == 0 :
+        save_pop()
+
       liste_f = pop1.fitness_list() 
-      if max(liste_f)==1 : 
-        return the best graph
-      else {
-		  pop1.reproduction(liste_f, prob_reproduction, qtty_reproduction)
-		  mutation() #of the newborn only
-		  liste_f = fitness_list()
-      }
+      if max(liste_f)==1 :
+        save_pop()
+        show_best() 
+        return "Found it!"
+      else :
+        nb_newborns = pop1.reproduction()
+        pop1.mutation(nb_newborns) #of the newborn only
+      
+    save_pop()
+    show_best() 
+    return "Finished!"
 
 
 P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
