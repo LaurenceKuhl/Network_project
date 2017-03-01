@@ -74,6 +74,6 @@ prob_mutation = 0.1
 qtty_reproduction = 0.2
 coefficients = [1,1,1]
 
-S = Simulation(lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, prob_reproduction, prob_mutation, qtty_reproduction, coefficients)
-S.run()
+#~ S = Simulation(lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, prob_reproduction, prob_mutation, qtty_reproduction, coefficients)
+#~ S.run()
 
