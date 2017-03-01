@@ -16,17 +16,18 @@ class Simulation:
   #def save_pop(): (save a file ".txt")
   
   #runs the simulation (returns void or "finished")
-  def run():
+  #def run():
 	#initialise the population
-    poeple = pop.Population()
+    #poeple = pop.Population()
     #run the simulation
-    liste_f = fitness_list() 
-	for x in range(max_time):                          # OR in a second part “while True:”
-		if best fitness ever: return the best graph
-		pop.reproduction(liste_f, prob_reproduction, qtty_reproduction)
-		mutation() #of the newborn only
-		liste_f = fitness_list()
+    #liste_f = fitness_list() 
+    #for x in range(max_time):                          # OR in a second part while True:
+		  #if best fitness ever: return the best graph
+		  #pop.reproduction(liste_f, prob_reproduction, qtty_reproduction)
+		  #mutation() #of the newborn only
+		  #liste_f = fitness_list()
 
 
-P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
+P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[0.3,0.3,0.4])
 P1.mutation(2)
+P1.fitness(5,[1,2,3],2.1,2, [2,3,5])

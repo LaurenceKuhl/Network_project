@@ -32,7 +32,19 @@ class Population:
 	  gamma.append(fit.power_law.alpha)
     return gamma
     
-  #def fitness(): (returns a float between 0 and 1)	
+  def fitness(self, n, k, g, d, c_k):# (returns a float between 0 and 1)	
+   # n is the number of nodes, k is the list of degrees, g is the gamma of the power law, d is the diameter, c_k is the list of clustering coefficients 
+    list_d1 = []
+    for i in xrange (len(k)) :
+      list_d1.append( (c_k[i] - 1./k[i])**2 )
+    d1  =  np.mean (list_d1)# clustering fitness
+    if  g  >  2  and g  <  3 : # power law fitness
+      d2  =  0
+    else : d2  =  (g - 2.5)**2
+    d3  =  (d  -  math.log(math.log(n)))**2
+    fit  =  1./(1 + self.coeff[0]*d1 + self.coeff[1]*d2 + self.coeff[2]*d3) #fitness
+    return fit
+    
 
   #========================================== methods for the population
   
