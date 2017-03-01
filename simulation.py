@@ -14,6 +14,18 @@ class Simulation:
     
   #def show_best(): (returns a figure and a list of the realistic parameters)
   #def save_pop(): (save a file ".txt")
-  #def run(): (returns void or "finished")
+  
+  #runs the simulation (returns void or "finished")
+  def run():
+	#initialise the population
+    poeple = pop.Population()
+    #run the simulation
+    liste_f = fitness_list() 
+	for x in range(max_time):                          # OR in a second part “while True:”
+		if best fitness ever: return the best graph
+		pop.reproduction(liste_f, prob_reproduction, qtty_reproduction)
+		mutation() #of the newborn only
+		liste_f = fitness_list()
+
 
 #P1 = pop.Population(5,0.5,2,0.1,0.1,0.2,[2])
