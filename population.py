@@ -3,6 +3,7 @@ from powerlaw import Fit
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 
 import networkx as nx
 
@@ -57,7 +58,46 @@ class Population:
 					  	  #what about left-without-edges nodes ?	
 			  	  c += 1
 
+  def reproduction(self):
+    list_sorted = self.fitness_list()
+    list_fit = copy.copy(list_fittest)
+    list_sorted.sort(reverse = True)
+    reprod_graphs = []
     
+    for i in xrange(0, (self.qreprod)*(self.nb_graphs)):
+      reprod_graphs.append(self.graphs[list_fit.index(list_sorted[i])]) #So here I have the fittest graphs for the reproduction
+      
+    nbnewborn = 0
+    length_reprod = len(reprod_graphs)/2
+    
+    for i in xrange(0, length_reprod ,1):
+      individuals = random.sample(reprod_graphs, 2)
+      self.reprod_graphs.remove(individuals[0])
+      self.reprod_graphs.remove(individuals[1])
+      
+      if (random.uniform(0,1) < self.preprod) :
+        qty = int(random.uniform(0,1))
+        indiv1 = individuals[0].edges()
+        indiv2 = individuals[1].edges()
+        newborn = nx.fast_gnp_random_graph(self.nb_nodes, 0, seed=None, directed=False)
+        
+        for i in xrange(0, qty*len(indiv1)):
+          newborn.add_edge(indiv1[i][0], indiv1[i][1])
+        
+        for i in xrange(0, (1-qty)*len(indiv2)):
+          newborn.add_edge(indiv2[i][0], indiv2[i][1])
+        
+        self.graphs.remove(self.graphs[list_fit.index(list_sorted[-1])])
+        self.graphs.append(newborn)
+        nbnewborn++
+        
+    return nbnewborn
+        
+        
+      
+      
+      
+      
     
     
 P1 = Population(1000,0.5,2,0.1,0.1,0.2,[2])
