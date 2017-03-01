@@ -48,10 +48,15 @@ class Population:
 
   #========================================== methods for the population
   
-  #def fitness_list(): (returns a list of float)
+  def fitness_list(self):  #(returns a list of float)
+    list_f = []
+    for G in self.graphs:
+	  liste_f.append(fitness(G))
+	return liste_f    
+	  
   #def reproduction(): (returns void)
 
-  def mutation( self , nb_newborns) : 	  # randomly mutate all the newborns
+  def mutation(self , nb_newborns) : 	  # randomly mutate all the newborns
 	  if nb_newborns  !=  0 :
 		  c  =  0 # counter
 		  while c  !=  nb_newborns :  # randomly delete one edge, then add a new one and check wether or not it was already there
