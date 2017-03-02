@@ -3,6 +3,7 @@ from powerlaw import Fit
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import operator
 
 import networkx as nx
 
@@ -31,7 +32,27 @@ class Population:
 	  fit = Fit(sorted(G.degree().values()))
 	  gamma.append(fit.power_law.alpha)
     return gamma
-    
+  
+  def clust_coef(self):
+    clcoef = []
+    for G in self.graphs:
+      tuplist = sorted(G.degree().items(), key=operator.itemgetter(1))
+      deg = -1
+      i = -1
+      L = []
+      for tup in tuplist:
+        if tup[1] > deg:
+          deg = tup[1]
+          i += 1
+          L.append([tup[0]])
+        elif tup[1] == deg:
+          L[i].append(tup[0])
+      coef = []
+      for nodelist in L:
+        coef.append(nx.average_clustering(G,nodelist))
+      clcoef.append(coef)
+      return clcoef
+      
   #def fitness(): (returns a float between 0 and 1)	
 
   #========================================== methods for the population
@@ -60,6 +81,6 @@ class Population:
     
     
     
-P1 = Population(1000,0.5,2,0.1,0.1,0.2,[2])
-print P1.clust_powlaw()
+P1 = Population(10,0.5,2,0.1,0.1,0.2,[2])
+print P1.clust_coef()
 
