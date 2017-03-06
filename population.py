@@ -20,6 +20,7 @@ class Population:
         self.qreprod = qtty_reproduction
         self.coeff = coefficients
         self.graphs = []
+	self.reprod_graphs = []
         for i in xrange(nb_graphs):
             self.graphs.append(nx.fast_gnp_random_graph(self.nb_nodes, self.p_edges, seed=None, directed=False))
             #print self.graphs[i].edges()
@@ -79,7 +80,7 @@ class Population:
 	list_f = []
 	for G in self.graphs:
 	    list_f.append(self.fitness(G))
-	    print self.fitness(G)
+	    #print self.fitness(G)
 	return list_f    
 
     def mutation(self , nb_newborns) : 	  # randomly mutate all the newborns
@@ -102,17 +103,18 @@ class Population:
 
     def reproduction(self):
         list_sorted = self.fitness_list()
-        list_fit = copy.copy(list_fittest)
+        list_fit = copy.copy(list_sorted)
         list_sorted.sort(reverse = True)
-        reprod_graphs = []
+        self.reprod_graphs = []
         
-        for i in xrange(0, (self.qreprod)*(self.nb_graphs)):
-            reprod_graphs.append(self.graphs[list_fit.index(list_sorted[i])]) #So here I have the fittest graphs for the reproduction
-            nbnewborn = 0
-            length_reprod = len(reprod_graphs)/2
+        for i in xrange(0, int((self.qreprod)*(self.nb_graphs))):
+            self.reprod_graphs.append(self.graphs[list_fit.index(list_sorted[i])]) #So here I have the fittest graphs for the reproduction
+	
+	nbnewborn = 0
+	length_reprod = len(self.reprod_graphs)/2
         
         for i in xrange(0, length_reprod ,1):
-            individuals = random.sample(reprod_graphs, 2)
+            individuals = random.sample(self.reprod_graphs, 2)
             self.reprod_graphs.remove(individuals[0])
             self.reprod_graphs.remove(individuals[1])
           
@@ -122,15 +124,15 @@ class Population:
                 indiv2 = individuals[1].edges()
                 newborn = nx.fast_gnp_random_graph(self.nb_nodes, 0, seed=None, directed=False)
             
-            for i in xrange(0, qty*len(indiv1)):
-                newborn.add_edge(indiv1[i][0], indiv1[i][1])
+		for i in xrange(0, qty*len(indiv1)):
+		    newborn.add_edge(indiv1[i][0], indiv1[i][1])
             
-            for i in xrange(0, (1-qty)*len(indiv2)):
-                newborn.add_edge(indiv2[i][0], indiv2[i][1])
+		for i in xrange(0, (1-qty)*len(indiv2)):
+		    newborn.add_edge(indiv2[i][0], indiv2[i][1])
             
-            self.graphs.remove(self.graphs[list_fit.index(list_sorted[-1])])
-            self.graphs.append(newborn)
-            nbnewborn+=1
+		self.graphs.remove(self.graphs[list_fit.index(list_sorted[-1])])
+		self.graphs.append(newborn)
+		nbnewborn+=1
         
         return nbnewborn
         
@@ -153,18 +155,18 @@ class Population:
 		fh=open(s,'r')
 		self.graphs.append(nx.read_adjlist(fh))
 		fh.close()
-		print i+1
+		#print i+1
 	else :
 	    print 'Save directory not found'
 
     def show_best(self): # Plot the graph with the best fitness of our current population
 	list_fit = self.fitness_list()
         nx.draw_spectral(self.graphs[list_fit.index(max(list_fit))])
-	print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
+	#print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
         plt.show()
-	
-P1 = Population(10,0.5,4,0.1,0.1,0.2,[1,1,1])
-print P1.fitness(P1.graphs[0])
-P1.save_pop()
-P1.load_pop(4,'popsave')
-P1.show_best()
+
+
+#~ P1 = Population(10,0.5,4,0.1,0.1,0.2,[1,1,1])
+#~ P1.load_pop(4,'popsave')
+#~ P1.show_best()
+
