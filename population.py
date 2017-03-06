@@ -136,8 +136,7 @@ class Population:
         
         return nbnewborn
         
-    def save_pop(self): # Save the current graph population in a textfile
-        mypath = 'popsave'
+    def save_pop(self,mypath): # Save the current graph population in a textfile
         if not os.path.isdir(mypath):
             os.makedirs(mypath)
         for i in xrange(len(self.graphs)):
@@ -161,12 +160,15 @@ class Population:
 
     def show_best(self): # Plot the graph with the best fitness of our current population
 	list_fit = self.fitness_list()
-        nx.draw_spectral(self.graphs[list_fit.index(max(list_fit))])
-	#print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
+	G = self.graphs[list_fit.index(max(list_fit))]
+	deg = nx.degree(G).values()	
+	print deg
+	pos = nx.spring_layout(G,iterations=200)
+	nx.draw(G,pos,node_color = deg,node_size = 800,cmap=plt.cm.Blues)
+	print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
         plt.show()
 
-
-#~ P1 = Population(10,0.5,4,0.1,0.1,0.2,[1,1,1])
-#~ P1.load_pop(4,'popsave')
-#~ P1.show_best()
+P1 = Population(10,0.5,4,0.1,0.1,0.2,[1,1,1])
+P1.load_pop(40,'popsave')
+P1.show_best()
 
