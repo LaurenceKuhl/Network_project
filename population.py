@@ -42,7 +42,6 @@ class Population:
         deg = -1
         i = -1
         L = []
-        X = []
         for tup in tuplist:
             if tup[1] > deg:
                 deg = tup[1]
@@ -60,7 +59,7 @@ class Population:
         # d is the diameter, c_k is the list of clustering coefficients
         k, c_k = self.clust_coef(G)
         g = self.clust_powlaw(G)
-        d = 0
+        d = nx.diameter(G)
         list_d1 = []
         for i in xrange (len(k)) :
 	    if not k[i] == 0 : # No idea what to do if k[i] equals 0 so i dont consider them here (Antoine)
