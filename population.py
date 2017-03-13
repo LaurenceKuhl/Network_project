@@ -91,23 +91,34 @@ class Population:
         list_f.append(self.fitness(G))
       return list_f    
 
+	
     def mutation(self , nb_newborns) : 	  # randomly mutate all the newborns
       if nb_newborns  !=  0 :
-          c  =  0 # counter
-          while c  !=  nb_newborns :  # randomly delete one edge, then add a new one and check wether or not it was already there
-            m = random.uniform(0,1)
-            if m <= self.pmut :
-              deleted  =  random.randint(0, len( self.graphs[- c -1].edges() ) - 1 ) # random edge to be deleted 
-              self.graphs[- c-1].remove_edge(self.graphs[- c -1].edges()[deleted][0],self.graphs[- c-1].edges()[deleted][1]) # pop the edge
-              flag  =  False
-              while flag  ==  False :
-                node1  =  random.randint (0, len(self.graphs[-c-1].nodes()))
-                node2  =  random.randint (0,len (self.graphs[-c-1].nodes()))
-                if node1  !=  node2 and (min(node1,node2), max(node1,node2)) not in self.graphs[- c-1].edges() : # check if edge doesn't already exists
-                  flag  =  True
-                  self.graphs[-c-1].add_edge(min(node1,node2), max(node1,node2)) #new edge		
-                  #what about left-without-edges nodes ?	
-                  c += 1
+        c  =  0 # counter
+        while c  !=  nb_newborns :  # only newborns mutate # 
+          nb_mut  =  len(self.graphs[- c -1].edges() ) - 1
+          c_mut  =  0
+          while c_mut !=  nb_mut : # pmut nb_edges times
+            print self.graphs[- c -1].edges()
+            m  =  random.uniform(0,1)
+            if m  <=  self.pmut :
+              d  =  random.uniform(0,1) # in/
+              if d  <  0.5 : #delete
+                deleted  =  random.randint(0, len( self.graphs[- c -1].edges() ) - 1 ) # random edge to be deleted 
+                self.graphs[- c-1].remove_edge(self.graphs[- c -1].edges()[deleted][0],self.graphs[- c-1].edges()[deleted][1]) # pop the edge
+              else :
+                flag  =  False
+                while flag  ==  False :
+                  node1  =  random.randint (0, len(self.graphs[-c-1].nodes()))
+                  node2  =  random.randint (0,len (self.graphs[-c-1].nodes()))
+                  if node1  !=  node2 and (min(node1,node2), max(node1,node2)) not in self.graphs[- c-1].edges() : # check if edge doesn't already exists
+                    flag  =  True
+                    self.graphs[-c-1].add_edge(min(node1,node2), max(node1,node2)) #new edge		
+            if len(self.graphs[- c -1].edges() )  ==  0 :
+              break
+            c_mut +=1
+          c += 1
+
 
     def reproduction(self):
         list_sorted = self.fitness_list()
