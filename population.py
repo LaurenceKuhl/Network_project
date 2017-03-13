@@ -41,15 +41,15 @@ class Population:
     i = -1
     L = []
     for tup in tuplist:
-        if tup[1] > deg:
-            deg = tup[1]
-            i += 1
-            L.append([tup[0]])
-            degrees.append(tup[1])
-        elif tup[1] == deg:
-            L[i].append(tup[0])
+      if tup[1] > deg:
+        deg = tup[1]
+        i += 1
+        L.append([tup[0]])
+        degrees.append(tup[1])
+      elif tup[1] == deg:
+        L[i].append(tup[0])
     for nodelist in L:
-        avgcoef.append(nx.average_clustering(G,nodelist))
+      avgcoef.append(nx.average_clustering(G,nodelist))
     return degrees, avgcoef
   
   def diameter(self,G):
