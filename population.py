@@ -176,7 +176,7 @@ class Population:
 	print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
         plt.show()
 
-P1 = Population(100,0.5,4,0.1,0.1,0.2,[1,1,1])
+P1 = Population(1000,0.5,4,0.1,0.1,0.2,[1,1,1])
 #P1.load_pop(40,'popsave')
 print P1.diameter(P1.graphs[0])
 
