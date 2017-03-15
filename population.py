@@ -76,7 +76,7 @@ class Population:
     if outputtype == 0:
 			return fit
     else:
-			return [round(d1,3),round(d2,3),round(d3,3),round(d,3),round(g,3),round(math.log(math.log(self.nb_nodes)),3)]
+			return [round(d1,3),round(d2,3),round(d3,3),round(g,3),round(d,3),round(math.log(math.log(self.nb_nodes)),3)]
   
 
 
@@ -202,8 +202,8 @@ class Population:
 		#~ print list_fit[0], list_fit[1]
 		plt.show()
 
-#~ P1 = Population(10,0.5,5,0.1,0.2,[1,1,1])
-#~ P1.load_pop(30,'popsave')
+#~ P1 = Population(10,0.5,5,0.2,[1,1,1])
+#~ P1.load_pop(30,'popsave2')
 #~ print 'loading done'
 #~ P1.show_best()
 
