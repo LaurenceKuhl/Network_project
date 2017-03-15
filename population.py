@@ -55,8 +55,8 @@ class Population:
   def diameter(self,G):
     e = {}
     for v in G.nodes():
-        length=nx.single_source_shortest_path_length(G,v)
-        e[v]=max(length.values())
+      length=nx.single_source_shortest_path_length(G,v)
+      e[v]=max(length.values())
     return max(e.values())
     
   def fitness(self, G):# (returns a float between 0 and 1)	
