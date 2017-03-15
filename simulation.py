@@ -8,7 +8,7 @@ import sys
 
 
 class Simulation:
-	def __init__(self, lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, qimmi, prob_mutation, qtty_reproduction, coefficients,savefile):
+	def __init__(self, lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, qtty_immi, prob_mutation, qtty_reproduction, coefficients,savefile):
 		self.lim_fitness = lim_fitness
 		self.text_time = text_time
 		self.max_time = max_time 
@@ -20,7 +20,7 @@ class Simulation:
 		self.qreprod = qtty_reproduction
 		self.coeff = coefficients
 		self.savefile = savefile
-		self.qimmi = qimmi
+		self.qtty_immi = qtty_immi
     
   #def show_best(): (returns a figure and a list of the realistic parameters)
   #def save_pop(): (save a file ".txt")
@@ -29,7 +29,7 @@ class Simulation:
 
 	def run(self):
 		#initialise the population
-		pop1 = pop.Population(self.nb_nodes, self.p_edges, self.nb_graphs, self.pmut, self.qreprod, self.coeff)
+		pop1 = pop.Population(self.nb_nodes, self.p_edges, self.nb_graphs, self.pmut, self.coeff)
 		#run the simulation
 		results = []
 		for x in xrange(max_time):                  # OR in a second part "while True:"
@@ -43,10 +43,10 @@ class Simulation:
 				pop1.show_best() 
 				return "Found it!"
 			else :
-				for i in range(self.qreprod):
+				for i in range(int(self.qreprod*self.nb_graphs)):
 					nbnewborns = pop1.reproduction()
 					pop1.mutation(nbnewborns) 
-				for i in range(self.qimmi):
+				for i in range(int(self.qtty_immi*self.nb_graphs)):
 					pop1.immigration()
 				list_fit = pop1.fitness_list()
 				print x , max(list_fit) , np.mean(list_fit) , list_fit.index(max(list_fit)), pop1.fitness(pop1.graphs[list_fit.index(max(list_fit))],1)
@@ -80,14 +80,15 @@ text_time = 100
 max_time = 500
 nb_nodes = 50
 p_edges = 0.2
-nb_graphs = 30
-qimmi = 1
-prob_mutation = 0.5
-qtty_reproduction = 2
-coefficients = [3,0.1,0.01]
+nb_graphs = 40
+prob_mutation = 0.02
+qtty_reproduction = 0.1
+qtty_immigration = 0.025
+
+coefficients = [10,0.1,0.01]
 savefile = 'popsave2'
 
-S = Simulation(lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, qimmi, prob_mutation, qtty_reproduction, coefficients, savefile)
+S = Simulation(lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, qtty_immigration, prob_mutation, qtty_reproduction, coefficients, savefile)
 A = S.run()
 a1 = []
 a2 = []
