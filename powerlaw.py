@@ -91,7 +91,7 @@ class Fit(object):
         self.xmin_distance = xmin_distance
 
         if 0 in self.data and verbose:
-            print("Values less than or equal to 0 in data. Throwing out 0 or negative values", file=sys.stderr)
+            #print("Values less than or equal to 0 in data. Throwing out 0 or negative values", file=sys.stderr)
             self.data = self.data[self.data>0]
 
         if self.xmax:
@@ -126,8 +126,8 @@ class Fit(object):
             #self.power_law = pl
         else:
             self.fixed_xmin=False
-            if verbose:
-                print("Calculating best minimal value for power law fit", file=sys.stderr)
+            #if verbose:
+                #print("Calculating best minimal value for power law fit", file=sys.stderr)
             self.find_xmin()
 
         self.data = self.data[self.data>=self.xmin]
@@ -197,8 +197,8 @@ class Fit(object):
             xmin_distance = self.xmin_distance
 
         if len(xmins)<=0:
-            print("Less than 2 unique data values left after xmin and xmax "
-                  "options! Cannot fit. Returning nans.", file=sys.stderr)
+            #print("Less than 2 unique data values left after xmin and xmax "
+                  #~ "options! Cannot fit. Returning nans.", file=sys.stderr)
             from numpy import nan, array
             self.xmin = nan
             self.D = nan
@@ -252,8 +252,8 @@ class Fit(object):
             min_D_index = masked_Ds.argmin()
             self.noise_flag = False
 
-        if self.noise_flag:
-            print("No valid fits found.", file=sys.stderr)
+        #~ if self.noise_flag:
+            #print("No valid fits found.", file=sys.stderr)
         
         #Set the Fit's xmin to the optimal xmin
         self.xmin = xmins[min_D_index]
@@ -656,7 +656,7 @@ class Distribution(object):
             data = self.parent_Fit.data
         data = trim_to_range(data, xmin=self.xmin, xmax=self.xmax)
         if len(data)<2:
-            print("Not enough data. Returning nan", file=sys.stderr)
+            #~ print("Not enough data. Returning nan", file=sys.stderr)
             from numpy import nan
             self.D = nan
             self.D_plus = nan
@@ -774,7 +774,7 @@ class Distribution(object):
         possible_numerical_error = False
         from numpy import isnan, min
         if isnan(min(CDF)):
-            print("'nan' in fit cumulative distribution values.", file=sys.stderr)
+            #print("'nan' in fit cumulative distribution values.", file=sys.stderr)
             possible_numerical_error = True
         #if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
@@ -1604,13 +1604,13 @@ class Lognormal(Distribution):
         possible_numerical_error = False
         from numpy import isnan, min
         if isnan(min(CDF)):
-            print("'nan' in fit cumulative distribution values.", file=sys.stderr)
+            #~ print("'nan' in fit cumulative distribution values.", file=sys.stderr)
             possible_numerical_error = True
         #if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
         #    possible_numerical_error = True
-        if possible_numerical_error:
-            print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
+        #~ if possible_numerical_error:
+            #~ print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
         return CDF
 
     def _initial_parameters(self, data):
