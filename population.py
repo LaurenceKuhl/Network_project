@@ -9,12 +9,11 @@ import networkx as nx
 import os
 
 class Population:
-  def __init__(self, nb_nodes, p_edges, nb_graphs, prob_mutation, qtty_reproduction, coefficients):
+  def __init__(self, nb_nodes, p_edges, nb_graphs, prob_mutation, coefficients):
     self.nb_nodes = nb_nodes
     self.p_edges = p_edges
     self.nb_graphs = nb_graphs 
     self.pmut = prob_mutation
-    self.qreprod = qtty_reproduction
     self.coeff = coefficients
     self.graphs = []
     self.reprod_graphs = []
@@ -50,7 +49,7 @@ class Population:
     for nodelist in L:
       avgcoef.append(nx.average_clustering(G,nodelist))
     return degrees, avgcoef
-  
+    
   def diameter(self,G):
     e = {}
     for v in G.nodes():
@@ -77,7 +76,7 @@ class Population:
     if outputtype == 0:
 			return fit
     else:
-			return [round(d1,3),round(d2,3),round(d,3)]
+			return [round(d1,3),round(d2,3),round(d3,3),round(d,3),round(g,3),round(math.log(math.log(self.nb_nodes)),3)]
   
 
 
@@ -208,9 +207,5 @@ class Population:
 #~ print 'loading done'
 #~ P1.show_best()
 
-P1 = Population(100,0.5,4,0.1,0.1,0.2,[1,1,1])
-#P1.load_pop(40,'popsave')
-print P1.diameter(P1.graphs[0])
-print P1.diameter(P1.graphs[1])
-
+#~ print P1.diameter(P1.graphs[0])
 
