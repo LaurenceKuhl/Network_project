@@ -99,7 +99,7 @@ class Population:
         nb_mut  =  len(self.graphs[- c -1].edges() ) - 1
         c_mut  =  0
         while c_mut !=  nb_mut : # pmut nb_edges times
-          print self.graphs[- c -1].edges()
+          #~ print self.graphs[- c -1].edges()
           m  =  random.uniform(0,1)
           if m  <=  self.pmut :
             d  =  random.uniform(0,1) # in/
@@ -143,15 +143,15 @@ class Population:
         indiv2 = individuals[1].edges()
         newborn = nx.fast_gnp_random_graph(self.nb_nodes, 0, seed=None, directed=False)
             
-      for i in xrange(0, qty*len(indiv1)):
-        newborn.add_edge(indiv1[i][0], indiv1[i][1])
+        for i in xrange(0, qty*len(indiv1)):
+          newborn.add_edge(indiv1[i][0], indiv1[i][1])
             
-      for i in xrange(0, (1-qty)*len(indiv2)):
-        newborn.add_edge(indiv2[i][0], indiv2[i][1])
+        for i in xrange(0, (1-qty)*len(indiv2)):
+          newborn.add_edge(indiv2[i][0], indiv2[i][1])
             
-      self.graphs.remove(self.graphs[list_fit.index(list_sorted[-1])])
-      self.graphs.append(newborn)
-      nbnewborn+=1
+        self.graphs.remove(self.graphs[list_fit.index(list_sorted[-1])])
+        self.graphs.append(newborn)
+        nbnewborn+=1
         
     return nbnewborn
         
