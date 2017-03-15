@@ -9,11 +9,10 @@ import networkx as nx
 import os
 
 class Population:
-  def __init__(self, nb_nodes, p_edges, nb_graphs, prob_reproduction, prob_mutation, qtty_reproduction, coefficients):
+  def __init__(self, nb_nodes, p_edges, nb_graphs, prob_mutation, qtty_reproduction, coefficients):
     self.nb_nodes = nb_nodes
     self.p_edges = p_edges
     self.nb_graphs = nb_graphs 
-    self.preprod = prob_reproduction
     self.pmut = prob_mutation
     self.qreprod = qtty_reproduction
     self.coeff = coefficients
@@ -62,7 +61,7 @@ class Population:
       e[v] = max(length.values())
     return max(e.values())
     
-  def fitness(self, G):# (returns a float between 0 and 1)	
+  def fitness(self, G , outputtype):# (returns a float between 0 and 1)	
     # k is the sorted list of degrees, g is the gamma of the power law, 
     # d is the diameter, c_k is the list of clustering coefficients
     k, c_k = self.clust_coef(G)
@@ -78,116 +77,139 @@ class Population:
     else : d2  =  (g - 2.5)**2
     d3  =  (d  -  math.log(math.log(self.nb_nodes)))**2
     fit  =  1./(1 + self.coeff[0]*d1 + self.coeff[1]*d2 + self.coeff[2]*d3) #fitness
-    return fit
-    
+    if outputtype == 0:
+			return fit
+    else:
+			return [round(d1,3),round(d2,3),round(d,3)]
   
 
 
   #========================================== methods for the population
   
   def fitness_list(self):  #(returns a list of float)
-    list_f = []
-    for G in self.graphs:
-      list_f.append(self.fitness(G))
-    return list_f    
+		list_f = []
+		for G in self.graphs:
+			list_f.append(self.fitness(G,0))
+		return list_f    
 
-  
+
   def mutation(self , nb_newborns) : 	  # randomly mutate all the newborns
-    if nb_newborns  !=  0 :
-      c  =  0 # counter
-      while c  !=  nb_newborns :  # only newborns mutate # 
-        nb_mut  =  len(self.graphs[- c -1].edges() ) - 1
-        c_mut  =  0
-        while c_mut !=  nb_mut : # pmut nb_edges times
-          #~ print self.graphs[- c -1].edges()
-          m  =  random.uniform(0,1)
-          if m  <=  self.pmut :
-            d  =  random.uniform(0,1) # in/
-            if d  <  0.5 : #delete
-              deleted  =  random.randint(0, len( self.graphs[- c -1].edges() ) - 1 ) # random edge to be deleted 
-              self.graphs[- c-1].remove_edge(self.graphs[- c -1].edges()[deleted][0],self.graphs[- c-1].edges()[deleted][1]) # pop the edge
-            else :
-              flag  =  False
-              while flag  ==  False :
-                node1  =  random.randint (0, len(self.graphs[-c-1].nodes()))
-                node2  =  random.randint (0,len (self.graphs[-c-1].nodes()))
-                if node1  !=  node2 and (min(node1,node2), max(node1,node2)) not in self.graphs[- c-1].edges() : # check if edge doesn't already exists
-                  flag  =  True
-                  self.graphs[-c-1].add_edge(min(node1,node2), max(node1,node2)) #new edge		
-          if len(self.graphs[- c -1].edges() )  ==  0 :
-            break
-          c_mut +=1
-        c += 1
+		if nb_newborns  !=  0 :
+			c  =  0 # counter
+			while c  !=  nb_newborns :  # only newborns mutate # 
+				nb_mut  =  len(self.graphs[- c -1].edges() ) -1
+				c_mut  =  0
+				while c_mut !=  nb_mut : # pmut nb_edges times
+					#~ print self.graphs[- c -1].edges()
+					m  =  random.uniform(0,1)
+					if m  <=  self.pmut :
+						d  =  random.uniform(0,1) # in/
+						if d  <  0.5 : #delete
+							deleted  =  random.randint(0, len( self.graphs[- c -1].edges() ) - 1 ) # random edge to be deleted 
+							self.graphs[- c-1].remove_edge(self.graphs[- c -1].edges()[deleted][0],self.graphs[- c-1].edges()[deleted][1]) # pop the edge
+						else :
+							flag  =  False
+							while flag  ==  False :
+								node1  =  random.randint (0, len(self.graphs[-c-1].nodes()))
+								node2  =  random.randint (0,len (self.graphs[-c-1].nodes()))
+								if node1  !=  node2 and (min(node1,node2), max(node1,node2)) not in self.graphs[- c-1].edges() : # check if edge doesn't already exists
+									flag  =  True
+									self.graphs[-c-1].add_edge(min(node1,node2), max(node1,node2)) #new edge		
+					if len(self.graphs[- c -1].edges() )  ==  0 :
+						break
+					c_mut +=1
+				c += 1
 
-
+  def immigration(self):
+		list_sorted = self.fitness_list()
+		list_fit = copy.copy(list_sorted)
+		list_sorted.sort(reverse = True)
+		graphs_ordered =[]
+		for i in xrange(self.nb_graphs):
+			graphs_ordered.append(self.graphs[list_fit.index(list_sorted[i])])
+		self.graphs =[]
+		for i in xrange(self.nb_graphs):
+			self.graphs.append(graphs_ordered[i])
+			
+		self.graphs.remove(self.graphs[-1])
+		self.graphs.append(nx.fast_gnp_random_graph(self.nb_nodes, self.p_edges, seed=None, directed=False))
+		
+			
   def reproduction(self):
-    list_sorted = self.fitness_list()
-    list_fit = copy.copy(list_sorted)
-    list_sorted.sort(reverse = True)
-    self.reprod_graphs = []
-        
-    for i in xrange(0, int((self.qreprod)*(self.nb_graphs))):
-      self.reprod_graphs.append(self.graphs[list_fit.index(list_sorted[i])]) #So here I have the fittest graphs for the reproduction
-  
-    nbnewborn = 0
-    length_reprod = len(self.reprod_graphs)/2
-        
-    for i in xrange(0, length_reprod ,1):
-      individuals = random.sample(self.reprod_graphs, 2)
-      self.reprod_graphs.remove(individuals[0])
-      self.reprod_graphs.remove(individuals[1])
-          
-      if (random.uniform(0,1) < self.preprod) :
-        qty = int(random.uniform(0,1))
-        indiv1 = individuals[0].edges()
-        indiv2 = individuals[1].edges()
-        newborn = nx.fast_gnp_random_graph(self.nb_nodes, 0, seed=None, directed=False)
-            
-        for i in xrange(0, qty*len(indiv1)):
-          newborn.add_edge(indiv1[i][0], indiv1[i][1])
-            
-        for i in xrange(0, (1-qty)*len(indiv2)):
-          newborn.add_edge(indiv2[i][0], indiv2[i][1])
-            
-        self.graphs.remove(self.graphs[list_fit.index(list_sorted[-1])])
-        self.graphs.append(newborn)
-        nbnewborn+=1
-        
-    return nbnewborn
+		list_sorted = self.fitness_list()
+		list_fit = copy.copy(list_sorted)
+		list_sorted.sort(reverse = True)
+		graphs_ordered =[]
+		for i in xrange(self.nb_graphs):
+			graphs_ordered.append(self.graphs[list_fit.index(list_sorted[i])])
+		self.graphs =[]
+		for i in xrange(self.nb_graphs):
+			self.graphs.append(graphs_ordered[i])
+		
+		self.reprod_graphs = []
+		for i in xrange(self.nb_graphs):
+			self.reprod_graphs.append(self.graphs[i])
+		    
+		chief = self.reprod_graphs[0]
+		individual = random.sample(self.reprod_graphs,2)
+		qty = int(random.uniform(0,1))
+		indiv1 = individual[0].edges()
+		indiv2 = individual[1].edges()
+		newborn = nx.fast_gnp_random_graph(self.nb_nodes, 0, seed=None, directed=False)
+		qmax1 = int(qty*len(indiv1))
+		qmax2 = len(indiv1)-qmax1
+		if qmax2 < 0:
+			qmax2 = 0
+		for i in xrange(0, qmax1):
+			r =  np.random.randint(0,len(indiv1))
+			newborn.add_edge(indiv1[r][0], indiv1[r][1])
+		for i in xrange(0, qmax2):
+			r =  np.random.randint(0,len(indiv2))
+			newborn.add_edge(indiv2[r][0], indiv2[r][1])
+				
+		self.graphs.remove(self.graphs[-1])
+		self.graphs.append(newborn)  
+		
+		return 1
         
   def save_pop(self,mypath): # Save the current graph population in a textfile
-   if not os.path.isdir(mypath):
-     os.makedirs(mypath)
-     for i in xrange(len(self.graphs)):
-        s = './popsave/g'+str(i)+'.txt'
-        fh=open(s,'wb')
-        nx.write_adjlist(self.graphs[i],fh)
-        fh.close()
+		if not os.path.isdir(mypath):
+			os.makedirs(mypath)
+		for i in xrange(len(self.graphs)):
+			s = './'+mypath+'/g'+str(i)+'.txt'
+			fh=open(s,'wb')
+			nx.write_adjlist(self.graphs[i],fh)
+			fh.close()
 
   def load_pop(self,nbofgraphs,mypath): # Load a graph population from a directory
-    mypath = 'popsave'
-    if os.path.isdir(mypath):
-      self.graphs = []
-      for i in xrange(nbofgraphs):
-        s = './popsave/g'+str(i)+'.txt'
-        fh=open(s,'r')
-        self.graphs.append(nx.read_adjlist(fh))
-        fh.close()
-        #print i+1
-    else :
-      print 'Save directory not found'
+		if os.path.isdir(mypath):
+			self.graphs = []
+			for i in xrange(nbofgraphs):
+				s = './'+mypath+'/g'+str(i)+'.txt'
+				fh=open(s,'r')
+				self.graphs.append(nx.read_adjlist(fh))
+				fh.close()
+				#print i+1
+		else :
+			print 'Save directory not found'
 
   def show_best(self): # Plot the graph with the best fitness of our current population
-    list_fit = self.fitness_list()
-    G = self.graphs[list_fit.index(max(list_fit))]
-    deg = nx.degree(G).values()	
-    print deg
-    pos = nx.spring_layout(G,iterations=200)
-    nx.draw(G,pos,node_color = deg,node_size = 800,cmap=plt.cm.Blues)
-    print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
-    plt.show()
+		list_fit = self.fitness_list()
+		G = self.graphs[list_fit.index(max(list_fit))]
+		deg = nx.degree(G).values()	
+		print deg
+		pos = nx.fruchterman_reingold_layout(G,iterations=200)
+		nx.draw(G,pos,node_color = deg,node_size = 800,cmap=plt.cm.Blues)
+		print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
+		#~ G = self.graphs[1]
+		#~ nx.draw(G,pos,edge_color='red')
+		#~ print list_fit[0], list_fit[1]
+		plt.show()
 
-P1 = Population(1000,0.5,4,0.1,0.1,0.2,[1,1,1])
-#P1.load_pop(40,'popsave')
-print P1.diameter(P1.graphs[0])
+#~ P1 = Population(10,0.5,5,0.1,0.2,[1,1,1])
+#~ P1.load_pop(30,'popsave')
+#~ print 'loading done'
+#~ P1.show_best()
+
+#~ print P1.diameter(P1.graphs[0])
 
