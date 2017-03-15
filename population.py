@@ -53,13 +53,10 @@ class Population:
     return degrees, avgcoef
   
   def diameter(self,G):
-    nodes = []
-    for node in G.nodes():
-      if G.degree(node) > 0: nodes.append(node)
     e = {}
-    for v in nodes:
-      length = nx.single_source_shortest_path_length(G,v) 
-      e[v] = max(length.values())
+    for v in G.nodes():
+        length=nx.single_source_shortest_path_length(G,v)
+        e[v]=max(length.values())
     return max(e.values())
     
   def fitness(self, G):# (returns a float between 0 and 1)	
@@ -187,7 +184,8 @@ class Population:
     print "printing graph number " + str(list_fit.index(max(list_fit))) + " "  
     plt.show()
 
-P1 = Population(1000,0.5,4,0.1,0.1,0.2,[1,1,1])
+P1 = Population(100,0.5,4,0.1,0.1,0.2,[1,1,1])
 #P1.load_pop(40,'popsave')
 print P1.diameter(P1.graphs[0])
+print P1.diameter(P1.graphs[1])
 
