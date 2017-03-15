@@ -8,48 +8,48 @@ import sys
 
 
 class Simulation:
-	def __init__(self, lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, prob_reproduction, prob_mutation, qtty_reproduction, coefficients,savefile):
-		self.lim_fitness = lim_fitness
-		self.text_time = text_time
-		self.max_time = max_time 
-		#usefull for the population
-		self.nb_nodes = nb_nodes
-		self.p_edges = p_edges
-		self.nb_graphs = nb_graphs 
-		self.preprod = prob_reproduction
-		self.pmut = prob_mutation
-		self.qreprod = qtty_reproduction
-		self.coeff = coefficients
-		self.savefile = savefile
+  def __init__(self, lim_fitness, text_time, max_time, nb_nodes, p_edges, nb_graphs, prob_reproduction, prob_mutation, qtty_reproduction, coefficients,savefile):
+    self.lim_fitness = lim_fitness
+    self.text_time = text_time
+    self.max_time = max_time 
+    #usefull for the population
+    self.nb_nodes = nb_nodes
+    self.p_edges = p_edges
+    self.nb_graphs = nb_graphs 
+    self.preprod = prob_reproduction
+    self.pmut = prob_mutation
+    self.qreprod = qtty_reproduction
+    self.coeff = coefficients
+    self.savefile = savefile
     
   #def show_best(): (returns a figure and a list of the realistic parameters)
   #def save_pop(): (save a file ".txt")
   
   #runs the simulation (returns void or "finished")
 
-	def run(self):
-		#initialise the population
-		pop1 = pop.Population(self.nb_nodes, self.p_edges, self.nb_graphs, self.preprod, self.pmut, self.qreprod, self.coeff)
-		#run the simulation
-		results = []
-		for x in xrange(max_time):                  # OR in a second part "while True:"
-			if (x+1)%text_time == 0 :
-				print 'saving population'
-				pop1.save_pop(self.savefile)
+  def run(self):
+    #initialise the population
+    pop1 = pop.Population(self.nb_nodes, self.p_edges, self.nb_graphs, self.preprod, self.pmut, self.qreprod, self.coeff)
+    #run the simulation
+    results = []
+    for x in xrange(max_time):                  # OR in a second part "while True:"
+      if (x+1)%text_time == 0 :
+        print 'saving population'
+        pop1.save_pop(self.savefile)
 
-			liste_f = pop1.fitness_list() 
-			if max(liste_f) >= lim_fitness :
-				pop1.save_pop()
-				pop1.show_best() 
-				return "Found it!"
-			else :
-				nbnewborns = pop1.reproduction()
-				pop1.mutation(nbnewborns) #of the newborn only
-				list_fit = pop1.fitness_list()
-				print x , max(list_fit) , np.mean(list_fit)
-				results.append([max(list_fit), np.mean(list_fit)])
-				
-		return results
+        liste_f = pop1.fitness_list() 
+      if max(liste_f) >= lim_fitness :
+        pop1.save_pop()
+        pop1.show_best() 
+        return "Found it!"
+      else :
+        nbnewborns = pop1.reproduction()
+        pop1.mutation(nbnewborns) #of the newborn only
+        list_fit = pop1.fitness_list()
+        print x , max(list_fit) , np.mean(list_fit)
+        results.append([max(list_fit), np.mean(list_fit)])
+        
+    return results
 
 
 
@@ -89,8 +89,8 @@ A = S.run()
 a1 = []
 a2 = []
 for i in range(len(A)):
-	a1.append(A[i][0])
-	a2.append(A[i][1])
+  a1.append(A[i][0])
+  a2.append(A[i][1])
 x = range(len(A))
 
 plt.plot(x,A)
