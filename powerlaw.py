@@ -67,7 +67,6 @@ class Fit(object):
                  parameter_range=None,
                  fit_optimizer=None,
                  xmin_distance='D',
-                 verbose=True,
                  **kwargs):
 
         self.data_original = data
@@ -90,8 +89,8 @@ class Fit(object):
 
         self.xmin_distance = xmin_distance
 
-        if 0 in self.data and verbose:
-            #print("Values less than or equal to 0 in data. Throwing out 0 or negative values", file=sys.stderr)
+        if 0 in self.data:
+            #~ print("Values less than or equal to 0 in data. Throwing out 0 or negative values", file=sys.stderr)
             self.data = self.data[self.data>0]
 
         if self.xmax:
@@ -126,8 +125,7 @@ class Fit(object):
             #self.power_law = pl
         else:
             self.fixed_xmin=False
-            #if verbose:
-                #print("Calculating best minimal value for power law fit", file=sys.stderr)
+            #~ print("Calculating best minimal value for power law fit", file=sys.stderr)
             self.find_xmin()
 
         self.data = self.data[self.data>=self.xmin]
@@ -197,7 +195,7 @@ class Fit(object):
             xmin_distance = self.xmin_distance
 
         if len(xmins)<=0:
-            #print("Less than 2 unique data values left after xmin and xmax "
+            #~ print("Less than 2 unique data values left after xmin and xmax "
                   #~ "options! Cannot fit. Returning nans.", file=sys.stderr)
             from numpy import nan, array
             self.xmin = nan
@@ -253,8 +251,8 @@ class Fit(object):
             self.noise_flag = False
 
         #~ if self.noise_flag:
-            #print("No valid fits found.", file=sys.stderr)
-        
+            #~ print("No valid fits found.", file=sys.stderr)
+        #~ 
         #Set the Fit's xmin to the optimal xmin
         self.xmin = xmins[min_D_index]
         setattr(self, xmin_distance, getattr(self, xmin_distance+'s')[min_D_index])
@@ -321,7 +319,7 @@ class Fit(object):
             Significance of R
         """
         if (dist1 in dist2) or (dist2 in dist1) and nested is None:
-            print("Assuming nested distributions", file=sys.stderr)
+            #~ print("Assuming nested distributions", file=sys.stderr)
             nested = True
 
         dist1 = getattr(self, dist1)
@@ -634,8 +632,8 @@ class Distribution(object):
             self.noise_flag=True
         else:
             self.noise_flag=False
-        if self.noise_flag and not suppress_output:
-            print("No valid fits found.", file=sys.stderr)
+        #~ if self.noise_flag and not suppress_output:
+            #~ print("No valid fits found.", file=sys.stderr)
         self.loglikelihood =-negative_loglikelihood
         self.KS(data)
 
@@ -774,13 +772,13 @@ class Distribution(object):
         possible_numerical_error = False
         from numpy import isnan, min
         if isnan(min(CDF)):
-            #print("'nan' in fit cumulative distribution values.", file=sys.stderr)
+            #~ print("'nan' in fit cumulative distribution values.", file=sys.stderr)
             possible_numerical_error = True
         #if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
         #    possible_numerical_error = True
-        if possible_numerical_error:
-            print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
+        #~ if possible_numerical_error:
+            #~ print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
         return CDF
 
     @property
@@ -1604,13 +1602,13 @@ class Lognormal(Distribution):
         possible_numerical_error = False
         from numpy import isnan, min
         if isnan(min(CDF)):
-            #~ print("'nan' in fit cumulative distribution values.", file=sys.stderr)
+            print("'nan' in fit cumulative distribution values.", file=sys.stderr)
             possible_numerical_error = True
         #if 0 in CDF or 1 in CDF:
         #    print("0 or 1 in fit cumulative distribution values.", file=sys.stderr)
         #    possible_numerical_error = True
-        #~ if possible_numerical_error:
-            #~ print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
+        if possible_numerical_error:
+            print("Likely underflow or overflow error: the optimal fit for this distribution gives values that are so extreme that we lack the numerical precision to calculate them.", file=sys.stderr)
         return CDF
 
     def _initial_parameters(self, data):
@@ -1943,33 +1941,17 @@ def pdf(data, xmin=None, xmax=None, linear_bins=False, **kwargs):
         xmax = max(data)
     if not xmin:
         xmin = min(data)
-    
-   
-    if xmin<1:  #To compute the pdf also from the data below x=1, the data, xmax and xmin are rescaled dividing them by xmin.
-        xmax2=xmax/xmin
-        xmin2=1
-    else: 
-        xmax2=xmax
-        xmin2=xmin
-    
     if linear_bins:
-        bins = range(int(xmin2), int(xmax2))
+        bins = range(int(xmin), int(xmax))
     else:
-        log_min_size = log10(xmin2)
-        log_max_size = log10(xmax2)
+        log_min_size = log10(xmin)
+        log_max_size = log10(xmax)
         number_of_bins = ceil((log_max_size-log_min_size)*10)
         bins=unique(
                 floor(
                     logspace(
                         log_min_size, log_max_size, num=number_of_bins)))
-    
-    if xmin<1: #Needed to include also data x<1 in pdf.
-        hist, edges = histogram(data/xmin, bins, density=True)
-        edges=edges*xmin # transform result back to original   
-        hist=hist/xmin # rescale hist, so that np.sum(hist*edges)==1
-    else:
-        hist, edges = histogram(data, bins, density=True)
-    
+    hist, edges = histogram(data, bins, density=True)
     return edges, hist
 
 def checkunique(data):
